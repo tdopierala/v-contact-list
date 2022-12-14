@@ -1,41 +1,38 @@
 # vContactListApp (v-contact-list)
 
-A Quasar Project
+Demo application that displays a list of contacts from an external rest api.
+
+Link to application:
+[https://v-contact-list.netlify.app](https://v-contact-list.netlify.app/)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0a73d326-9c3c-48f6-8f00-85f28cff5d00/deploy-status)](https://app.netlify.com/sites/v-contact-list/deploys)
+
+![contact-list-screenshot](contact-list.png)
 
 ## Install the dependencies
 ```bash
-yarn
-# or
 npm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+npm run dev
 ```
-
 
 ### Lint the files
 ```bash
-yarn lint
-# or
 npm run lint
 ```
 
-
 ### Format the files
 ```bash
-yarn format
-# or
 npm run format
 ```
 
-
-
 ### Build the app for production
-```bash
-quasar build
+```
+npm run build
 ```
 
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+## Version
+Latest: 0.1.0-dev
