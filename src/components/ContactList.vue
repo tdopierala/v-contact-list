@@ -1,6 +1,8 @@
 <template>
-	<q-page class="flex justify-center">
-		<q-list bordered separator class="user-list">
+	<div class="flex column justify-center q-mx-auto users-list-container">
+		<search-list @input="usersStore.filterUsers" />
+
+		<q-list bordered separator v-if="usersStore.users.length">
 			<q-item clickable v-ripple v-for="user in usersStore.users" :key="user.id" :to="`/user/${user.id}`">
 				<q-item-section avatar>
 					<q-avatar>
@@ -14,11 +16,19 @@
 				</q-item-section>
 
 				<q-item-section side>
-					<q-icon name="star" :color="user.favorite ? 'yellow' : 'gray'" @click.prevent="setFavorite(user.id)" />
+					<q-btn flat round icon="favorite" :color="user.favorite ? 'red' : 'gray'" @click.prevent="usersStore.setFavorite(user.id)" />
 				</q-item-section>
 			</q-item>
 		</q-list>
-	</q-page>
+
+		<q-list bordered separator v-if="!usersStore.users.length">
+			<q-item v-ripple>
+				<q-item-section>
+					<q-item-label>No elements found.</q-item-label>
+				</q-item-section>
+			</q-item>
+		</q-list>
+	</div>
 	<div class="q-pa-lg flex flex-center">
 		<q-pagination v-model="usersStore.currentPage" :max="usersStore.totalPages" direction-links />
 	</div>
@@ -27,18 +37,12 @@
 <script setup lang="ts">
 import { watch, onMounted } from 'vue';
 import { useUsersStore } from 'src/stores/users-store';
-import { User } from 'src/models/user.model';
+import SearchList from './SearchList.vue';
 
 const usersStore = useUsersStore();
 
 const getUsers = function (page: number) {
 	usersStore.fetchUsers(page);
-};
-
-const setFavorite = function (userId: number) {
-	const user: User = usersStore.users.find(user => user.id === userId) as User;
-	user.favorite = !user.favorite;
-	user.favorite ? usersStore.addFavorite(userId) : usersStore.removeFavorite(userId);
 };
 
 watch(
@@ -55,7 +59,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.user-list {
-	width: 50%;
+.users-list-container {
+	max-width: 60%;
 }
 </style>

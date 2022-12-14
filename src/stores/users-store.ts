@@ -1,29 +1,32 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { User } from 'src/models/user.model';
+import { User, UserMock } from 'src/models/user.model';
 
 const api = 'https://reqres.in/api';
 const storage = 'favoriteUsers';
 
 export const useUsersStore = defineStore('users', {
 	state: () => ({
-		users: [
-			{
-				id: 7,
-				email: 'michael.lawson@reqres.in',
-				first_name: 'Michael',
-				last_name: 'Lawson',
-				avatar: 'https://reqres.in/img/faces/7-image.jpg',
-			},
-		] as User[],
+		users: [UserMock] as User[],
+		usersB: [UserMock] as User[],
 		totalPages: 0 as number,
 		currentPage: 1 as number,
 	}),
+
 	getters: {
 		getUser: state => {
 			return (userId: number) => state.users.find(user => user.id === userId);
 		},
+		getUsers: state => state.users.filter(() => true),
+		// filterUsers: state => {
+		// 	return (phrase: string) =>
+		// 		state.users.filter(user => {
+		// 			if (phrase === '') return true;
+		// 			else return user.first_name.toLowerCase().includes(phrase.toLowerCase()) || user.last_name.toLowerCase().includes(phrase.toLowerCase());
+		// 		});
+		// },
 	},
+
 	actions: {
 		async fetchUsers(page: number): Promise<void> {
 			await axios.get(`${api}/users?page=${page}`).then(res => {
@@ -33,11 +36,31 @@ export const useUsersStore = defineStore('users', {
 				this.totalPages = res.data.total_pages;
 
 				this.users.map(user => (user.favorite = favorites.includes(user.id)));
+				this.usersB = this.users;
 			});
 		},
+
+		async fetchUser(userId: number) {
+			return await axios.get(`${api}/users/${userId}`);
+		},
+
+		filterUsers(pharse: string) {
+			this.users = this.usersB;
+			this.users = this.users.filter(user => {
+				return user.first_name.toLowerCase().includes(pharse.toLowerCase()) || user.last_name.toLowerCase().includes(pharse.toLowerCase());
+			});
+		},
+
 		getFavorites(): number[] {
 			return localStorage.getItem(storage) ? JSON.parse(localStorage.getItem(storage) as string) : [];
 		},
+
+		setFavorite(userId: number): void {
+			const user: User = this.users.find(user => user.id === userId) as User;
+			user.favorite = !user.favorite;
+			user.favorite ? this.addFavorite(userId) : this.removeFavorite(userId);
+		},
+
 		addFavorite(userId: number): void {
 			const favorites: number[] = this.getFavorites();
 
@@ -46,6 +69,7 @@ export const useUsersStore = defineStore('users', {
 				localStorage.setItem(storage, JSON.stringify(favorites));
 			}
 		},
+
 		removeFavorite(userId: number): void {
 			const favorites: number[] = this.getFavorites();
 

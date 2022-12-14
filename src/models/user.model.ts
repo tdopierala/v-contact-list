@@ -6,3 +6,12 @@ export interface User {
 	avatar: string;
 	favorite?: boolean;
 }
+
+export const UserMock: User = {
+	id: 0,
+	email: '',
+	first_name: '',
+	last_name: '',
+	avatar: '',
+	favorite: false,
+};
