@@ -29,15 +29,21 @@ export const useUsersStore = defineStore('users', {
 
 	actions: {
 		async fetchUsers(page: number): Promise<void> {
-			await axios.get(`${api}/users?page=${page}`).then(res => {
-				const favorites: number[] = this.getFavorites();
+			await axios
+				.get(`${api}/users?page=${page}`)
+				.then(res => {
+					const favorites: number[] = this.getFavorites();
 
-				this.users = res.data.data;
-				this.totalPages = res.data.total_pages;
+					this.users = res.data.data;
+					this.totalPages = res.data.total_pages;
 
-				this.users.map(user => (user.favorite = favorites.includes(user.id)));
-				this.usersB = this.users;
-			});
+					this.users.map(user => (user.favorite = favorites.includes(user.id)));
+					this.usersB = this.users;
+				})
+				.catch(error => {
+					this.users.length = 0;
+					console.log(error);
+				});
 		},
 
 		async fetchUser(userId: number) {
