@@ -26,7 +26,7 @@ module.exports = {
 		'no-unexpected-multiline': 'error',
 		'max-len': ['error', { code: 160 }],
 		'comma-style': ['error', 'last'],
-		'comma-dangle': ['error', 'always-multiline'],
+		'comma-dangle': ['error', 'only-multiline'],
 		'indent': ['error', 'tab'],
 		'space-infix-ops': 'error',
 		'brace-style': 'error',
